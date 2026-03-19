@@ -1,0 +1,555 @@
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-0: #050b14;
+    --bg-1: #07121f;
+    --bg-2: #0b1b2d;
+    --panel: rgba(9, 21, 36, 0.82);
+    --panel-strong: rgba(11, 26, 45, 0.94);
+    --edge: rgba(239, 201, 111, 0.18);
+    --text: #edf4ff;
+    --muted: #91a4bc;
+    --accent: #efc96f;
+    --accent-strong: #ffd374;
+    --accent-soft: rgba(239, 201, 111, 0.12);
+    --success: #2bd78f;
+    --danger: #ff607f;
+    --card-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+    --radius: 26px;
+    --font-display: "Orbitron", sans-serif;
+    --font-body: "Manrope", sans-serif;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+    color: var(--text);
+    font-family: var(--font-body);
+    background:
+        radial-gradient(circle at 12% 12%, rgba(51, 106, 184, 0.16), transparent 30%),
+        radial-gradient(circle at 84% 8%, rgba(239, 201, 111, 0.12), transparent 22%),
+        linear-gradient(180deg, var(--bg-2), var(--bg-1) 40%, var(--bg-0));
+}
+
+body {
+    position: relative;
+    overflow-x: hidden;
+}
+
+.texture {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+}
+
+.texture-grid {
+    opacity: 0.5;
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(circle at center, black 62%, transparent 100%);
+}
+
+.texture-lines {
+    opacity: 0.3;
+    background:
+        linear-gradient(125deg, transparent 0 28%, rgba(255, 255, 255, 0.04) 28% 29%, transparent 29% 100%),
+        linear-gradient(35deg, transparent 0 70%, rgba(239, 201, 111, 0.08) 70% 71%, transparent 71% 100%);
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+    border: 0;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 14px 16px;
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    outline: none;
+}
+
+input:focus,
+select:focus {
+    border-color: rgba(239, 201, 111, 0.72);
+    box-shadow: 0 0 0 3px rgba(239, 201, 111, 0.14);
+}
+
+code {
+    color: var(--accent);
+    font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.app-shell {
+    position: relative;
+    z-index: 1;
+    width: min(1200px, calc(100vw - 32px));
+    margin: 0 auto;
+    padding: 24px 0 40px;
+}
+
+.screen {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.panel {
+    position: relative;
+    width: 100%;
+    background: linear-gradient(180deg, var(--panel), rgba(11, 26, 45, 0.94));
+    border: 1px solid var(--edge);
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+    backdrop-filter: blur(14px);
+    overflow: hidden;
+}
+
+.panel::before {
+    content: "";
+    position: absolute;
+    inset: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 18px;
+    pointer-events: none;
+}
+
+.hero-panel,
+.exercise-panel,
+.stats-panel {
+    padding: 30px;
+}
+
+.hero-panel {
+    max-width: 1000px;
+    padding: 42px;
+}
+
+.eyebrow,
+.mini-label,
+.metric-label,
+.card-title,
+.stat-label,
+.field > span,
+.shortcut-row {
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.eyebrow {
+    color: var(--accent);
+    letter-spacing: 0.16em;
+    margin-bottom: 12px;
+}
+
+h1,
+h2,
+.problem-text,
+.metric-value,
+.stat-value {
+    font-family: var(--font-display);
+}
+
+h1,
+h2 {
+    margin: 0;
+    line-height: 1.04;
+}
+
+h1 {
+    font-size: clamp(42px, 6.2vw, 78px);
+}
+
+h2 {
+    font-size: clamp(30px, 4vw, 48px);
+}
+
+.hero-copy {
+    max-width: 760px;
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1.65;
+    margin: 18px 0 28px;
+}
+
+.mini-stats-grid,
+.settings-grid,
+.stats-grid,
+.two-column-grid {
+    display: grid;
+    gap: 16px;
+}
+
+.mini-stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: 28px;
+}
+
+.mini-card,
+.metric-block,
+.card,
+.stat-card {
+    background: rgba(255, 255, 255, 0.032);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 20px;
+}
+
+.mini-card,
+.metric-block,
+.card,
+.stat-card {
+    padding: 18px;
+}
+
+.mini-card strong {
+    display: block;
+    margin-top: 10px;
+    font-size: 20px;
+    line-height: 1.35;
+}
+
+.settings-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.settings-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.field-checkbox input {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    accent-color: var(--accent-strong);
+}
+
+.subtle-note {
+    color: var(--muted);
+    line-height: 1.55;
+    font-size: 14px;
+}
+
+.primary-button,
+.secondary-button,
+.tool-button {
+    border-radius: 16px;
+    padding: 14px 18px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.primary-button {
+    background: linear-gradient(180deg, #ffe19a, var(--accent-strong));
+    color: #211704;
+    box-shadow: 0 12px 34px rgba(255, 211, 116, 0.24);
+}
+
+.secondary-button,
+.tool-button {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.exercise-panel {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    flex-direction: column;
+}
+
+.exercise-panel.flash-correct {
+    box-shadow: inset 0 0 0 9999px rgba(43, 215, 143, 0.08), var(--card-shadow);
+}
+
+.exercise-panel.flash-wrong {
+    box-shadow: inset 0 0 0 9999px rgba(255, 96, 127, 0.08), var(--card-shadow);
+}
+
+.top-bar,
+.stats-header,
+.button-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: flex-start;
+}
+
+.progress-block {
+    min-width: 240px;
+}
+
+.metric-value {
+    font-size: clamp(28px, 4.5vw, 50px);
+    line-height: 1;
+}
+
+.metric-subvalue {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.timer-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: min(290px, 100%);
+}
+
+.timer-block .metric-value,
+.timer-block .metric-label,
+.timer-block .metric-subvalue {
+    text-align: right;
+}
+
+.streak-pill,
+.best-badge {
+    display: inline-flex;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid rgba(239, 201, 111, 0.2);
+    font-weight: 800;
+}
+
+.streak-pill {
+    margin-top: 14px;
+}
+
+.exercise-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    text-align: center;
+}
+
+.problem-text {
+    font-size: clamp(58px, 12vw, 118px);
+    letter-spacing: -0.08em;
+    line-height: 0.94;
+}
+
+.answer-form {
+    width: min(440px, 100%);
+}
+
+#answer-input {
+    padding: 18px 20px;
+    font-size: 28px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.toolbar,
+.shortcut-row {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.feedback-banner {
+    min-height: 24px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+}
+
+.feedback-banner.ok {
+    color: var(--success);
+}
+
+.feedback-banner.bad {
+    color: var(--danger);
+}
+
+.pause-overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(2, 8, 15, 0.58);
+    backdrop-filter: blur(6px);
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: clamp(36px, 6vw, 76px);
+}
+
+.summary-sentence {
+    margin: 18px 0 22px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--muted);
+    line-height: 1.65;
+}
+
+.chart-card {
+    margin-bottom: 18px;
+}
+
+.stats-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-bottom: 18px;
+}
+
+.stat-kicker {
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    margin-bottom: 12px;
+}
+
+.stat-value {
+    font-size: 30px;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.two-column-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.heatmap-legend {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 14px;
+}
+
+.heatmap-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 620px;
+    overflow: auto;
+    padding-right: 6px;
+}
+
+.heatmap-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.heatmap-row-label {
+    width: 28px;
+    color: var(--muted);
+    font-size: 12px;
+    text-align: right;
+}
+
+.heatmap-cell {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.94);
+    font-size: 10px;
+    font-weight: 800;
+}
+
+canvas {
+    width: 100% !important;
+    height: 320px !important;
+}
+
+@media (max-width: 1100px) {
+    .mini-stats-grid,
+    .settings-grid,
+    .two-column-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 780px) {
+    .screen {
+        align-items: stretch;
+    }
+
+    .app-shell {
+        width: min(100vw - 18px, 100%);
+        padding-top: 10px;
+        padding-bottom: 18px;
+    }
+
+    .hero-panel,
+    .exercise-panel,
+    .stats-panel {
+        padding: 20px;
+    }
+
+    .top-bar,
+    .stats-header,
+    .button-row {
+        flex-direction: column;
+    }
+
+    .timer-stack,
+    .toolbar {
+        width: 100%;
+    }
+
+    .timer-block .metric-value,
+    .timer-block .metric-label,
+    .timer-block .metric-subvalue {
+        text-align: left;
+    }
+
+    .toolbar {
+        flex-direction: column;
+    }
+
+    .tool-button,
+    .primary-button,
+    .secondary-button {
+        width: 100%;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}

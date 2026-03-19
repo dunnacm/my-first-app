@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subtraction HUD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Orbitron:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="texture texture-grid" aria-hidden="true"></div>
+    <div class="texture texture-lines" aria-hidden="true"></div>
+
+    <main class="app-shell">
+        <section id="home-screen" class="screen">
+            <div class="panel hero-panel">
+                <div class="eyebrow">Subtraction / command deck</div>
+                <h1>Subtraction HUD</h1>
+                <p class="hero-copy">
+                    Fast keyboard-first subtraction practice with persistence, adaptive review,
+                    session analytics, and a dark HUD-style interface built for focused repetition.
+                </p>
+
+                <div class="mini-stats-grid">
+                    <div class="mini-card">
+                        <span class="mini-label">Personal Best</span>
+                        <strong id="home-best-time">--</strong>
+                    </div>
+                    <div class="mini-card">
+                        <span class="mini-label">Saved Sessions</span>
+                        <strong id="home-total-sessions">0</strong>
+                    </div>
+                    <div class="mini-card">
+                        <span class="mini-label">Historical Focus</span>
+                        <strong id="home-focus-text">Your historical focus area will appear after the first saved session.</strong>
+                    </div>
+                </div>
+
+                <form id="start-form" class="settings-panel" autocomplete="off">
+                    <div class="settings-grid">
+                        <label class="field">
+                            <span>Mode</span>
+                            <select id="mode-select">
+                                <option value="full">Full deck</option>
+                                <option value="adaptive">Adaptive review</option>
+                                <option value="weak">Weak problems only</option>
+                            </select>
+                        </label>
+
+                        <label class="field">
+                            <span>Min A</span>
+                            <input id="min-a-input" type="number" min="1" max="20" value="1">
+                        </label>
+
+                        <label class="field">
+                            <span>Max A</span>
+                            <input id="max-a-input" type="number" min="1" max="20" value="20">
+                        </label>
+
+                        <label id="session-size-field" class="field">
+                            <span>Session size</span>
+                            <input id="session-size-input" type="number" min="5" max="190" value="40">
+                        </label>
+
+                        <label class="field field-checkbox">
+                            <span>Time pressure</span>
+                            <input id="time-pressure-checkbox" type="checkbox">
+                        </label>
+
+                        <label id="time-limit-field" class="field">
+                            <span>Time limit / problem</span>
+                            <input id="time-limit-input" type="number" min="3" max="120" value="20">
+                        </label>
+                    </div>
+
+                    <div class="subtle-note">
+                        This app uses the 190-problem interpretation of the prompt:
+                        <code>1 &lt;= B &lt; A &lt;= 20</code>.
+                    </div>
+
+                    <button type="submit" class="primary-button">Start Session</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="exercise-screen" class="screen hidden">
+            <div class="panel exercise-panel">
+                <div class="top-bar">
+                    <div class="metric-block progress-block">
+                        <div class="metric-label">Completed</div>
+                        <div id="progress-counter" class="metric-value">0 / 0</div>
+                        <div id="streak-counter" class="streak-pill">Streak 0</div>
+                    </div>
+
+                    <div class="timer-stack">
+                        <div class="metric-block timer-block">
+                            <div class="metric-label">Problem Timer</div>
+                            <div id="problem-timer" class="metric-value">00:00</div>
+                            <div id="task-limit-text" class="metric-subvalue">No limit</div>
+                        </div>
+                        <div class="metric-block timer-block">
+                            <div class="metric-label">Session Timer</div>
+                            <div id="session-timer" class="metric-value">00:00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise-center">
+                    <div id="problem-text" class="problem-text">12 - 5</div>
+
+                    <form id="answer-form" class="answer-form" autocomplete="off">
+                        <input
+                            id="answer-input"
+                            type="text"
+                            inputmode="numeric"
+                            pattern="-?[0-9]*"
+                            placeholder="Type answer and press Enter"
+                            aria-label="Answer input"
+                        >
+                    </form>
+
+                    <div class="toolbar" aria-label="Session controls">
+                        <button id="restart-btn" type="button" class="tool-button">Restart</button>
+                        <button id="pause-btn" type="button" class="tool-button">Pause</button>
+                        <button id="skip-btn" type="button" class="tool-button">Skip</button>
+                    </div>
+
+                    <div class="shortcut-row">
+                        <span>Enter submit</span>
+                        <span>P pause</span>
+                        <span>S skip</span>
+                        <span>Esc end early</span>
+                    </div>
+
+                    <div id="feedback-banner" class="feedback-banner" aria-live="polite"></div>
+                </div>
+
+                <div id="pause-overlay" class="pause-overlay hidden">Paused</div>
+            </div>
+        </section>
+
+        <section id="stats-screen" class="screen hidden">
+            <div class="panel stats-panel">
+                <div class="stats-header">
+                    <div>
+                        <div class="eyebrow">Session complete</div>
+                        <h2>Performance Summary</h2>
+                    </div>
+                    <div id="best-badge" class="best-badge hidden">New personal best</div>
+                </div>
+
+                <div id="summary-sentence" class="summary-sentence">
+                    Your weakest area this session was subtracting from 14-17. Target that band next time.
+                </div>
+
+                <div class="card chart-card">
+                    <div class="card-title">Time Per Problem</div>
+                    <canvas id="time-chart"></canvas>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-kicker">OK</div><div class="stat-value" id="correct-count">0</div><div class="stat-label">Correct</div></div>
+                    <div class="stat-card"><div class="stat-kicker">MIS</div><div class="stat-value" id="missed-count">0</div><div class="stat-label">Missed / Skipped</div></div>
+                    <div class="stat-card"><div class="stat-kicker">AVG</div><div class="stat-value" id="avg-time">0s</div><div class="stat-label">Average Time</div></div>
+                    <div class="stat-card"><div class="stat-kicker">TASK</div><div class="stat-value" id="task-time">--</div><div class="stat-label">Task Time / Problem</div></div>
+                    <div class="stat-card"><div class="stat-kicker">ACC</div><div class="stat-value" id="accuracy-value">0%</div><div class="stat-label">Accuracy</div></div>
+                    <div class="stat-card"><div class="stat-kicker">DUR</div><div class="stat-value" id="session-duration">0s</div><div class="stat-label">Session Duration</div></div>
+                    <div class="stat-card"><div class="stat-kicker">STR</div><div class="stat-value" id="best-streak">0</div><div class="stat-label">Best Streak</div></div>
+                    <div class="stat-card"><div class="stat-kicker">PB</div><div class="stat-value" id="personal-best-value">--</div><div class="stat-label">Personal Best Avg</div></div>
+                </div>
+
+                <div class="two-column-grid">
+                    <div class="card chart-card">
+                        <div class="card-title">Progress Over Time</div>
+                        <canvas id="progress-chart"></canvas>
+                    </div>
+
+                    <div class="card heatmap-card">
+                        <div class="card-title">Subtraction Heat Map</div>
+                        <div class="heatmap-legend">
+                            <span>Green strong</span>
+                            <span>Red weak</span>
+                        </div>
+                        <div id="heatmap-grid" class="heatmap-grid"></div>
+                    </div>
+                </div>
+
+                <div class="button-row">
+                    <button id="home-btn" type="button" class="secondary-button">Home</button>
+                    <button id="play-again-btn" type="button" class="primary-button">Play Again</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
